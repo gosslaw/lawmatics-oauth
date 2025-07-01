@@ -1,17 +1,15 @@
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    let body = '';
+  if (req.method === 'GET') {
+    const code = req.query.code;
 
-    req.on('data', chunk => {
-      body += chunk.toString();
-    });
+    if (code) {
+      console.log('Authorization code received:', code);
+      res.status(200).send(`Authorization code received: ${code}`);
+    } else {
+      res.status(400).send('No authorization code found in the query parameters.');
+    }
 
-    req.on('end', () => {
-      const code = new URLSearchParams(body).get('code');
-      console.log('Authorization code:', code);
-      res.status(200).send(`✅ Código recibido: ${code}`);
-    });
   } else {
-    res.status(200).send('Esperando el código de autorización...');
+    res.status(405).send('Method Not Allowed');
   }
 }
